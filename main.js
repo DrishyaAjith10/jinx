@@ -35,15 +35,21 @@ function checkTimeForReset(){
   }
 
 }
+const { screen } = require("electron")
 
 function createWindow(){
+
+  const display = screen.getPrimaryDisplay()
+  const { width, height } = display.workAreaSize
 
   win = new BrowserWindow({
     width:280,
     height:340,
+    x: width - 300,
+    y: height - 360,
+    frame:false,
     resizable:false,
     alwaysOnTop:true,
-    frame:false,
     webPreferences:{
       preload:path.join(__dirname,"preload.js")
     }
@@ -65,3 +71,28 @@ app.whenReady().then(()=>{
   })
 
 })
+
+app.setLoginItemSettings({
+  openAtLogin:true
+})
+
+const { Notification } = require("electron")
+
+function hourlyReminder(){
+
+  const tasks = store.get("tasks") || []
+
+  const pending = tasks.length
+
+  if(pending > 0){
+
+    new Notification({
+      title:"Jinx Reminder",
+      body:`You still have ${pending} unfinished task(s)`
+    }).show()
+
+  }
+
+}
+
+setInterval(hourlyReminder, 3600000)
