@@ -1,8 +1,19 @@
 let tasks = []
 
+const addBtn=document.getElementById("addTaskBtn")
+const saveBtn=document.getElementById("saveTaskBtn")
+const inputBox=document.getElementById("taskInput")
+const inputContainer=document.getElementById("taskInputContainer")
+const taskList=document.getElementById("taskList")
+const closeBtn=document.getElementById("closeBtn")
+
+addBtn.addEventListener("click",showInput)
+saveBtn.addEventListener("click",addTask)
+closeBtn.addEventListener("click",()=>window.close())
+
 async function loadTasks(){
 
-tasks = await window.jinxAPI.getTasks()
+tasks=await window.jinxAPI.getTasks()
 
 renderTasks()
 
@@ -10,25 +21,19 @@ renderTasks()
 
 loadTasks()
 
-
-
 function showInput(){
 
-const container = document.getElementById("taskInputContainer")
-
-container.style.display = "flex"
+inputContainer.classList.remove("hidden")
+inputBox.focus()
 
 }
 
 async function addTask(){
 
-const input = document.getElementById("taskInput")
+if(inputBox.value.trim()==="") return
 
-if(input.value.trim()==="") return
-
-const task = {
-text: input.value,
-done:false,
+const task={
+text:inputBox.value,
 carryForward:false
 }
 
@@ -38,42 +43,47 @@ await window.jinxAPI.saveTasks(tasks)
 
 renderTasks()
 
-input.value=""
-
-document.getElementById("taskInputContainer").style.display="none"
+inputBox.value=""
+inputContainer.classList.add("hidden")
 
 }
 
 function renderTasks(){
 
-const list = document.getElementById("taskList")
-
-list.innerHTML=""
+taskList.innerHTML=""
 
 tasks.forEach((task,index)=>{
 
 const li=document.createElement("li")
 
-li.innerHTML = `
-  <input type="checkbox" onchange="toggleDone(${index})">
+li.innerHTML=`
+<input type="checkbox" data-index="${index}" class="doneBox">
 
-  ${task.text}
+${task.text}
 
-  <label>
-  <input type="checkbox"
-  ${task.carryForward ? "checked" : ""}
-  onchange="carryForward(${index})">
-  ↺
-  </label>
+<label>
+<input type="checkbox" ${task.carryForward ? "checked":""} data-repeat="${index}" class="repeatBox">
+↺
+</label>
 `
 
-list.appendChild(li)
+taskList.appendChild(li)
 
+})
+
+document.querySelectorAll(".doneBox").forEach(box=>{
+box.addEventListener("change",removeTask)
+})
+
+document.querySelectorAll(".repeatBox").forEach(box=>{
+box.addEventListener("change",toggleRepeat)
 })
 
 }
 
-async function toggleDone(i){
+async function removeTask(e){
+
+const i=e.target.dataset.index
 
 tasks.splice(i,1)
 
@@ -83,11 +93,12 @@ renderTasks()
 
 }
 
-async function carryForward(i){
+async function toggleRepeat(e){
 
-  tasks[i].carryForward = !tasks[i].carryForward
+const i=e.target.dataset.repeat
 
-  await window.jinxAPI.saveTasks(tasks)
+tasks[i].carryForward=!tasks[i].carryForward
+
+await window.jinxAPI.saveTasks(tasks)
 
 }
-renderTasks()

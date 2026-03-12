@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -9,18 +9,19 @@
 
 <body>
 
-<h2>Jinx</h2>
+<div id="topBar">
+<button id="closeBtn">✕</button>
+</div>
 
 <ul id="taskList"></ul>
 
-<button id="addTaskBtn" onclick="showInput()">+ Add Task</button>
+<div id="addTaskContainer">
+<button id="addTaskBtn">+ Add Task</button>
+</div>
 
 <div id="taskInputContainer" class="hidden">
-
 <input id="taskInput" placeholder="What must be done today?" />
-
-<button onclick="addTask()">Save</button>
-
+<button id="saveTaskBtn">Add</button>
 </div>
 
 <script src="script.js"></script>

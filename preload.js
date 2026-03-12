@@ -1,9 +1,9 @@
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer } = require("electron")
 
-contextBridge.exposeInMainWorld("jinxAPI", {
+contextBridge.exposeInMainWorld("jinxAPI",{
 
-getTasks: () => ipcRenderer.invoke("getTasks"),
+  getTasks:()=> ipcRenderer.invoke("getTasks"),
 
-saveTasks: (tasks) => ipcRenderer.invoke("saveTasks", tasks)
+  saveTasks:(tasks)=> ipcRenderer.invoke("saveTasks",tasks)
 
 })
