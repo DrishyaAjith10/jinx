@@ -1,0 +1,14 @@
+{
+  "name": "jinx",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^41.0.0"
+  },
+  "dependencies": {
+    "electron-store": "^11.0.2"
+  }
+}
